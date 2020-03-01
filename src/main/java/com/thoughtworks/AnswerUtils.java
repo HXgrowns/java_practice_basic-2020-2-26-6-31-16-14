@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class AnswerUtils {
+    private static final int MAX_TIMES = 6;
 
-    public static String getAnswer() {
+    public static Answer getAnswer() {
         String answer = "";
 
         FileInputStream fileInputStream = null;
@@ -17,16 +18,11 @@ public class AnswerUtils {
             Scanner scanner = new Scanner(fileInputStream);
             if (scanner.hasNext()) {
                 String answerString = scanner.nextLine();
-                if (checkDataFormat(answerString)) {
-                    answer = answerString;
-                } else {
-                    answer = randomAnswer();
-                }
+                checkDataFormat(answerString);
+                answer = answerString;
             }
-
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             answer = randomAnswer();
-
         } finally {
             try {
                 if (fileInputStream != null) {
@@ -36,7 +32,7 @@ public class AnswerUtils {
                 e.printStackTrace();
             }
         }
-        return answer;
+        return new Answer(answer, MAX_TIMES);
     }
 
     public static String randomAnswer() {
@@ -55,23 +51,32 @@ public class AnswerUtils {
         return answer;
     }
 
-    public static boolean checkDataFormat(String data) {
+    public static void checkDataFormat(String data) throws ErrorInputResult {
         if (data == null || data.length() != 4) {
-            return false;
+            throw new ErrorInputResult(data);
         }
+
+        int[] counts = calculateCounts(data);
+        if (counts == null) {
+            throw new ErrorInputResult(data);
+        }
+
+        for (int count : counts) {
+            if (count > 1) {
+                throw new ErrorInputResult(data);
+            }
+        }
+    }
+
+    public static int[] calculateCounts(String data) {
         int[] counts = new int[10];
         for (int i = 0; i < data.length(); i++) {
             char charAt = data.charAt(i);
             if (charAt < '0' || charAt > '9') {
-                return false;
+                return null;
             }
             counts[charAt - '0']++;
         }
-        for (int i : counts) {
-            if (i > 1) {
-                return false;
-            }
-        }
-        return true;
+        return counts;
     }
 }

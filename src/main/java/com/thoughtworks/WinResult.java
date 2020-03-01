@@ -3,7 +3,7 @@ package com.thoughtworks;
 public class WinResult implements Result {
 
     @Override
-    public String printResult() {
-        return "Congratulations, you win!\n";
+    public void printResult() {
+        System.out.format("Congratulations, you win!\n");
     }
 }

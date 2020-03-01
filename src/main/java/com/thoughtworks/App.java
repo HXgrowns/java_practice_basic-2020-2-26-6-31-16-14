@@ -1,40 +1,29 @@
 package com.thoughtworks;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
 
-    public static void main(String[] args) throws IOException {
-        String answer = AnswerUtils.getAnswer();
+    public static void main(String[] args) {
+        Answer answer = AnswerUtils.getAnswer();
         Scanner scanner = new Scanner(System.in);
 
-        int count = 0;
-        String result = "";
-        while (count <= 5) {
-
+        List<Result> results = new ArrayList<>();
+        while (!answer.isGameOver()) {
             String input = scanner.nextLine();
-            if (!AnswerUtils.checkDataFormat(input)) {
-                result += new ErrorInputResult().printException(input);
-                count--;
-            } else {
-                GuessResult guessResult = new GuessResult(answer, input);
-                if (guessResult.calculateAB().get(0) == answer.length()) {
-                    result += guessResult.printResult();
-                    result += new WinResult().printResult();
-                    System.out.println(result);
-                    break;
-                } else {
-                    if (count < 5) {
-                        result += guessResult.printResult();
-                    } else {
-                        result += new FailResult(answer).printResult();
-                    }
-                }
+            try {
+                AnswerUtils.checkDataFormat(input);
+                results.add(answer.checkAnswer(input));
+            } catch (ErrorInputResult errorInputResult) {
+                results.add(errorInputResult);
             }
-            System.out.println(result);
-            count++;
-        }
 
+            for (Result result : results) {
+                result.printResult();
+            }
+        }
     }
 }
