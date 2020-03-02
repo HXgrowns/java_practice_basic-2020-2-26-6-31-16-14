@@ -1,6 +1,6 @@
 package com.thoughtworks;
 
-public class ErrorInputResult extends RuntimeException implements Result {
+public class ErrorInputResult implements Result {
     private String input;
 
     public ErrorInputResult(String input) {

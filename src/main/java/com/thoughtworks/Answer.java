@@ -42,4 +42,8 @@ public class Answer {
     public boolean isGameOver() {
         return gameOver;
     }
+
+    public int getCurrentTimes() {
+        return currentTimes;
+    }
 }

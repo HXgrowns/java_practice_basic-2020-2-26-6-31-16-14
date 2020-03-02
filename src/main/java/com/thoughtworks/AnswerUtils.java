@@ -35,7 +35,7 @@ public class AnswerUtils {
         return new Answer(answer, MAX_TIMES);
     }
 
-    public static String randomAnswer() {
+    private static String randomAnswer() {
         List<Integer> numbers = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             numbers.add(i);
@@ -44,26 +44,26 @@ public class AnswerUtils {
         Collections.shuffle(numbers);
         numbers = numbers.subList(0, 4);
 
-        String answer = "";
+        StringBuilder answer = new StringBuilder();
         for (Integer number : numbers) {
-            answer += number;
+            answer.append(number);
         }
-        return answer;
+        return answer.toString();
     }
 
-    public static void checkDataFormat(String data) throws ErrorInputResult {
+    public static void checkDataFormat(String data) throws ErrorInputException {
         if (data == null || data.length() != 4) {
-            throw new ErrorInputResult(data);
+            throw new ErrorInputException(data);
         }
 
         int[] counts = calculateCounts(data);
         if (counts == null) {
-            throw new ErrorInputResult(data);
+            throw new ErrorInputException(data);
         }
 
         for (int count : counts) {
             if (count > 1) {
-                throw new ErrorInputResult(data);
+                throw new ErrorInputException(data);
             }
         }
     }
